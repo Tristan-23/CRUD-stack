@@ -86,33 +86,14 @@ function toggleMenu(self) {
   console.log("Data:", data);
   console.log("Change:", change);
 
-  console.log(makeServerRequest());
-
-  fetch(advancedUrl + server, {
-    method: method,
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({
-      table: table,
-      data: data,
-      change: change,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then(({ data }) => {
-      data.forEach((item, index) => {
-        console.log(item);
-      });
-    })
-    .catch((error) => {
-      console.error(`Error during ${server} operation:`, error);
-    });
+  makeServerRequest(server, method, table, data, change).then((data) => {
+    if (data.type === "ERROR") {
+      console.error("Error fetching data:", data.msg);
+      return;
+    } else {
+      console.log(data);
+    }
+  });
 }
 
 function handleAuthentication(type) {
@@ -213,4 +194,31 @@ function handleAuthentication(type) {
         console.error(`Error during login:`, error);
       });
   }
+}
+
+function makeServerRequest(server, method, table, data, change) {
+  return fetch(advancedUrl + server, {
+    method: method,
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      table: table,
+      data: data,
+      change: change,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(`Error during ${server} operation:`, error);
+      throw error;
+    });
 }

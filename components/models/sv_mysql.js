@@ -6,10 +6,10 @@ const crypto = require("crypto");
 const iv = process.env.ENCRYPTION_IV;
 const key = process.env.ENCRYPTION_KEY;
 
-function generateCrypto() {
-  console.log("IV" + crypto.randomBytes(16).toString("hex"));
-  console.log("Key " + crypto.randomBytes(32).toString("hex"));
-}
+// function generateCrypto() {
+//   console.log("IV" + crypto.randomBytes(16).toString("hex"));
+//   console.log("Key " + crypto.randomBytes(32).toString("hex"));
+// }
 
 function encrypt(text) {
   const cipher = crypto.createCipheriv(
@@ -34,12 +34,13 @@ function decrypt(encryptedText) {
 }
 
 if (process.env.DEVELOPMENT_PRINT === "true") {
-  const text = "Dit is gemaakt door Tristán!";
+  const text = "Columns with 'secret_*' are encrypted, as shown";
+
   const encryptedText = encrypt(text, key, iv);
-  console.log("Encrypted text:", encryptedText);
+  console.log("\x1b[32mEncrypted Text:\x1b[0m %s", encryptedText);
 
   const decryptedText = decrypt(encryptedText, key, iv);
-  console.log("Decrypted text:", decryptedText);
+  console.log("\x1b[31mDecrypted Text:\x1b[0m %s", decryptedText);
 }
 
 const pool = mysql.createPool({
@@ -131,7 +132,12 @@ class DbService {
 
       if (result.affectedRows === 1) {
         const primaryKey = result.insertId;
-        return await this.defaultFetch(table, { id: primaryKey });
+        const fetch = await this.defaultFetch(table, data);
+        if (fetch.length === 1) {
+          return fetch;
+        } else {
+          return await this.defaultFetch(table, { id: primaryKey });
+        }
       } else {
         return {
           type: "ERROR",

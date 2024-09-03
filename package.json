@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --watch components/sv_node.js",
     "watch": "node components/utils/sv_watch.js",
-    "create": "node components/utils/sv_file.js"
+    "create": "node components/utils/sv_file.js",
+    "env": "node components/utils/sv_env.js"
   },
   "keywords": [],
   "author": "https://github.com/Tristan-23",
