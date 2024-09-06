@@ -57,7 +57,9 @@ if (!fs.existsSync(envFilePath)) {
   }
 }
 
-const allowedOrigins = [process.env.WEBSITE_URL];
+const allowedOrigins = [
+  `${process.env.WEBSITE_URL}:${process.env.WEBSITE_PORT}`,
+];
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -80,7 +82,8 @@ app.listen(process.env.WEBSITE_PORT, () => {
     console.log(
       colors.sender + `[${process.env.DEVELOPMENT_SENDER}]`,
       colors.good,
-      `Website has started : ` + `\x1b[4m${process.env.WEBSITE_URL}\x1b[24m`,
+      `Website has started : ` +
+        `\x1b[4m${process.env.WEBSITE_URL}:${process.env.WEBSITE_PORT}\x1b[24m`,
       colors.default
     );
   }
@@ -91,7 +94,8 @@ process.on("SIGINT", () => {
     console.log(
       colors.sender + `[${process.env.DEVELOPMENT_SENDER}]`,
       colors.bad,
-      `Website has stopped : ` + `\x1b[9m${process.env.WEBSITE_URL}\x1b[29m`,
+      `Website has stopped : ` +
+        `\x1b[9m${process.env.WEBSITE_URL}:${process.env.WEBSITE_PORT}\x1b[29m`,
       colors.default
     );
   }
@@ -115,4 +119,27 @@ fs.readdirSync(routesPath).forEach((file) => {
       app.use(`/`, route(file, databasePath));
     }
   }
+});
+
+const {
+  handleInsert,
+  handleUpdate,
+  handleDelete,
+  handleFetch,
+} = require("../components/models/sv_crud.js");
+
+app.use("*/insert", (req, res) => {
+  handleInsert(req, res, databasePath);
+});
+
+app.use("*/update", (req, res) => {
+  handleUpdate(req, res, databasePath);
+});
+
+app.use("*/delete", (req, res) => {
+  handleDelete(req, res, databasePath);
+});
+
+app.use("*/fetch", (req, res) => {
+  handleFetch(req, res, databasePath);
 });

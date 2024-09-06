@@ -20,7 +20,7 @@ const defaultValues = {
   DEVELOPMENT_PRINT: "true",
   DEVELOPMENT_CREDENTIALS: "false",
   DEVELOPMENT_SENDER: "Server",
-  WEBSITE_URL: "http://127.0.0.1:5000",
+  WEBSITE_URL: "http://127.0.0.1",
   WEBSITE_HOST: "127.0.0.1",
   WEBSITE_PORT: "5000",
 };
