@@ -103,7 +103,7 @@ process.on("SIGINT", () => {
 });
 
 const routesPath = path.join(__dirname, "..", "routes");
-const databasePath = require("./models/sv_mysql.js");
+const databasePath = require("./sv_mysql.js");
 
 fs.readdirSync(routesPath).forEach((file) => {
   const routePath = path.join(routesPath, file);
@@ -121,25 +121,20 @@ fs.readdirSync(routesPath).forEach((file) => {
   }
 });
 
-const {
-  handleInsert,
-  handleUpdate,
-  handleDelete,
-  handleFetch,
-} = require("../components/models/sv_crud.js");
+const CRUD = require("../components/models/sv_crud.js");
 
 app.use("*/insert", (req, res) => {
-  handleInsert(req, res, databasePath);
+  CRUD.handleInsert(req, res, databasePath);
 });
 
 app.use("*/update", (req, res) => {
-  handleUpdate(req, res, databasePath);
+  CRUD.handleUpdate(req, res, databasePath);
 });
 
 app.use("*/delete", (req, res) => {
-  handleDelete(req, res, databasePath);
+  CRUD.handleDelete(req, res, databasePath);
 });
 
 app.use("*/fetch", (req, res) => {
-  handleFetch(req, res, databasePath);
+  CRUD.handleFetch(req, res, databasePath);
 });
