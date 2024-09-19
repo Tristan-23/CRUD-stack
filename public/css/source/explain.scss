@@ -52,174 +52,229 @@ $negative-color: #b50000;
 body {
   width: 100%;
   height: 100vh;
+}
 
-  .background {
-    width: 100%;
-    height: 100%;
+.background {
+  width: 100%;
+  height: 100%;
+  background-color: $background-dark;
+  @include flex-center();
+
+  .card {
+    width: 50%;
+    height: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px;
+
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    position: relative;
-    overflow: hidden;
 
-    .card {
-      width: 40%;
-      height: 80%;
-      border-radius: 10px;
-      z-index: 1;
+    * {
+      height: 100%;
+    }
 
+    @keyframes initializeSwitch {
+      0% {
+        width: 0%;
+      }
+
+      25% {
+        width: 0%;
+      }
+
+      50% {
+        width: 40%;
+        opacity: 0;
+        transform: scaleX(1);
+      }
+
+      100% {
+        opacity: 1;
+        width: 40%;
+        transform: scaleX(1);
+      }
+    }
+
+    @keyframes requestSwitch {
+      0% {
+        width: 40%;
+      }
+
+      25% {
+        width: 0;
+      }
+
+      50% {
+        width: 40%;
+        opacity: 0;
+        transform: scaleX(1);
+      }
+
+      100% {
+        opacity: 1;
+        width: 40%;
+        transform: scaleX(1);
+      }
+    }
+
+    .initialize {
+      animation: initializeSwitch 5s ease forwards;
+    }
+
+    .register {
+      animation: requestSwitch 5s ease forwards;
+    }
+
+    .login {
+      animation: requestSwitch 5s ease forwards;
+    }
+
+    .forum {
+      width: 0%;
+      transform: scaleX(0);
       display: flex;
-      align-items: center;
       flex-direction: column;
+      opacity: 0;
 
-      background-color: $primary-white;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      opacity: 0.9;
-
-      header {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5%;
+      h1 {
         width: 100%;
+        height: 25%;
+        color: $background-light;
+        white-space: nowrap;
+      }
 
-        aside {
-          width: 42.5%;
-          height: 80%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          border-radius: 10px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      div {
+        width: 80%;
+        height: 15%;
+        display: flex;
+        flex-direction: column;
+        color: $background-light;
+        // background-color: $background-dark;
 
-          h1 {
-            width: 80%;
-            height: 12.5%;
-            border-radius: 0 0 10px 10px;
-            background-color: $primary-pink;
-            color: $primary-white;
-            @include flex-center();
-          }
-
-          ul {
-            height: 60%;
-            width: 80%;
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            li {
-              width: 80%;
-              height: 15%;
-              border-radius: 5px;
-              @include flex-center();
-              margin-bottom: 5%;
-
-              input {
-                padding: 0 5%;
-                border: 1px solid black;
-              }
-
-              button {
-                background-color: $primary-blue;
-                color: $primary-white;
-                font-family: "Maax-Bold";
-              }
-
-              * {
-                width: 100%;
-                height: 100%;
-                border-radius: 5px;
-              }
-
-              &:last-child {
-                margin-top: auto;
-              }
-            }
-          }
+        input {
+          width: 80%;
+          height: 50%;
+          margin-top: 2.5%;
+          margin-left: 5%;
+          padding: 0 5%;
+          background: rgba(255, 255, 255, 0.1);
+          color: $background-light;
+          border-radius: 5px;
         }
       }
 
       footer {
-        margin-bottom: 2%;
-        width: 90%;
-        height: 12.5%;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        width: 80%;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
 
         display: flex;
-        align-items: center;
-        justify-content: space-around;
+        align-items: flex-end;
 
-        background-image: radial-gradient(
-            $background-light 1px,
-            transparent 1px
-          ),
-          radial-gradient($background-light 1px, transparent 1px);
-        background-position: 0 0, 15px 15px; /* Adjusted position */
-        background-size: 10px 10px; /* Adjusted size */
-
-        a {
-          width: 12.5%;
-          height: 65%;
-          border-radius: 10px;
-          gap: 15%;
-          opacity: 1;
-
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-
-          background-color: $primary-blue;
-
-          * {
-            color: $primary-white;
-          }
-
-          i {
-            font-size: 100%;
-          }
-
-          p {
-            font-family: "Maax-Bold";
-          }
-        }
-
-        .here {
-          opacity: 0.5;
+        input {
+          height: 30%;
+          width: 50%;
+          border-radius: 5px;
+          padding: 0 5%;
+          max-width: 45%;
+          font-family: "Maax-Bold";
         }
       }
+    }
 
-      .active {
-        margin-bottom: 0;
-        border-radius: 10px 10px 0 0;
+    @keyframes gradientMove {
+      0% {
+        background-position: 30% 30%;
+      }
+      50% {
+        background-position: 60% 60%;
+      }
+      100% {
+        background-position: 30% 30%;
+      }
+    }
+
+    .logo {
+      flex: 1;
+      border-radius: 25px;
+      background: linear-gradient(23deg, #00365e, #dd0069);
+      position: relative;
+      @include flex-center();
+      animation: gradientMove 10s ease infinite;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        z-index: 1;
       }
 
-      section {
-        display: none;
-        height: 0;
-        width: 90%;
-        z-index: -1;
-        margin-bottom: 2%;
-        border-radius: 0 0 10px 10px;
-        background-color: #00b588;
-        overflow: hidden;
-        transition: height 1s ease;
+      #img {
+        width: 80%;
+        height: 80%;
+        position: relative;
+        z-index: 2;
+        background-image: url(../images/ace.png);
+        @include img-center();
+      }
+    }
+  }
 
-        div {
-          width: 100%;
-          height: 100%;
-          background-color: purple;
+  .island {
+    width: 5%;
+    margin-right: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 
-          ol {
-            list-style: decimal;
-            background-color: aqua;
-          }
+    button {
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      min-height: 10%;
+      height: auto;
+      border-radius: 25px;
+      background: linear-gradient(23deg, #00365e, #dd0069);
+      position: relative;
+      @include flex-center();
+      animation: gradientMove 10s ease infinite;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        z-index: 1;
+      }
+
+      i {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        @include flex-center();
+        z-index: 5000;
+        color: $background-med;
+        font-size: 150%;
+
+        &:hover {
+          cursor: pointer;
         }
       }
     }

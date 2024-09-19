@@ -123,18 +123,18 @@ fs.readdirSync(routesPath).forEach((file) => {
 
 const CRUD = require("../components/models/sv_crud.js");
 
-app.use("*/insert", (req, res) => {
+app.use("/insert", (req, res) => {
   CRUD.handleInsert(req, res, databasePath);
 });
 
-app.use("*/update", (req, res) => {
+app.use("/update", (req, res) => {
   CRUD.handleUpdate(req, res, databasePath);
 });
 
-app.use("*/delete", (req, res) => {
+app.use("/delete", (req, res) => {
   CRUD.handleDelete(req, res, databasePath);
 });
 
-app.use("*/fetch", (req, res) => {
+app.use("/fetch", (req, res) => {
   CRUD.handleFetch(req, res, databasePath);
 });

@@ -1,69 +1,33 @@
-const baseUrl = "http://127.0.0.1:5000";
-const advancedUrl = baseUrl + "/explain/";
+const element = document.querySelector(".forum");
+const header = element.querySelector("h1");
+const input = element.querySelector("#re-password");
 
-// let isBusy = false;
-// function toggleMenu(self) {
-//   if (isBusy) return;
-//   isBusy = true;
+// Just visual effects
+function switchForum() {
+  if (element.classList.contains("register")) {
+    element.classList.remove("register");
+    void element.offsetWidth;
+    element.classList.add("login");
 
-//   const section = document.querySelector("section");
-//   const footer = document.querySelector("footer");
-//   const activeButton = document.querySelector("footer .here");
+    header.innerHTML = "Please LOGIN";
+    input.style.visibility = "hidden";
+    input.querySelector("input").value = "";
+  } else {
+    element.classList.remove("login");
+    void element.offsetWidth;
+    element.classList.add("register");
 
-//   if (activeButton) {
-//     activeButton.classList.remove("here");
-//     if (activeButton === self) {
-//       section.style.height = "0";
-//       setTimeout(() => {
-//         footer.classList.remove("active");
-//         section.style.display = "none";
-//         document.querySelector(`#${self.id}-section`).style.display = "none";
-//         isBusy = false;
-//       }, 850);
-//       return;
-//     } else {
-//       document.querySelectorAll("section div").forEach((div) => {
-//         div.style.display = "none";
-//       });
-//     }
-//   }
+    header.innerHTML = "Please REGISTER";
+    input.style.visibility = "visible";
+  }
+}
 
-//   section.style.display = "block";
-//   document.querySelector(`#${self.id}-section`).style.display = "block";
-//   setTimeout(() => {
-//     section.style.height = "25%";
-//     isBusy = false;
-//   }, 100);
-//   footer.classList.add("active");
-//   self.classList.add("here");
-// }
-
-function toggleMenu(self) {
+function clickCRUD(self) {
   const server = self.id;
-  const method = self.getAttribute("data-method");
-
-  let table = prompt("Please enter the table name:");
-  if (!table) {
-    alert("Table name is required.");
-    return;
-  }
-
-  var data = {};
-  var change = {};
-
-  if (server === "update") {
-    let addMoreChange = true;
-    while (addMoreChange) {
-      let column = prompt("On which column do you want to search?");
-      let modify = prompt(`What is the data inside the column '${column}'?`);
-      if (!column || !modify) {
-        alert("Please fill in all fields.");
-        return;
-      }
-      change[column] = modify;
-      addMoreChange = confirm("Would you like to search on more columns?");
-    }
-  }
+  const method = server === "update" ? "PATCH" : "POST";
+  const table = prompt("Please enter the table name:");
+  let data;
+  let change;
 
   let addMoreData = true;
   while (addMoreData) {
@@ -82,6 +46,20 @@ function toggleMenu(self) {
     addMoreData = confirm("Would you like to add more data? ");
   }
 
+  if (server === "update") {
+    let addMoreChange = true;
+    while (addMoreChange) {
+      let column = prompt("On which column do you want to search?");
+      let modify = prompt(`What is the data inside the column '${column}'?`);
+      if (!column || !modify) {
+        alert("Please fill in all fields.");
+        return;
+      }
+      change[column] = modify;
+      addMoreChange = confirm("Would you like to search on more columns?");
+    }
+  }
+
   console.log("Table:", table);
   console.log("Data:", data);
   console.log("Change:", change);
@@ -96,129 +74,65 @@ function toggleMenu(self) {
   });
 }
 
-function handleAuthentication(type) {
-  var emailInput = document.querySelector(`#${type}-email`);
-  var passwordInput = document.querySelector(`#${type}-password`);
-  var rePasswordInput = document.querySelector(`#${type}-rePassword`);
+function submitForm() {
+  const username = element.querySelector("#username input");
+  const password = element.querySelector("#password input");
+  const re_password = input.querySelector("input");
 
-  if (!emailInput || !passwordInput) {
-    alert("Email or password input not found.");
-    return;
-  }
+  if (re_password.value !== "" && header.innerHTML === "Please REGISTER") {
+    if (password.value !== re_password.value) {
+      alert("Passwords do not match.");
+      return;
+    }
 
-  var email = emailInput.value;
-  var password = passwordInput.value;
-  var rePassword = rePasswordInput ? rePasswordInput.value : null;
+    const server = "insert";
+    const method = server === "update" ? "PATCH" : "POST";
+    const table = "users";
+    const data = {
+      email: username.value,
+      secret_password: password.value,
+    };
+    const change = {};
 
-  if (email === "" || password === "") {
-    alert("Please fill in all fields.");
-    return;
-  }
-
-  if (type === "register" && rePassword === "") {
-    alert("Please confirm your password.");
-    return;
-  }
-
-  if (type === "register" && password !== rePassword) {
-    alert("Passwords do not match.");
-    return;
-  }
-
-  if (type === "register") {
-    fetch(advancedUrl + "insert", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "users",
-        data: {
-          email: email,
-          secret_password: password,
-        },
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(({ data }) => {
-        if (data.type === "ERROR") {
-          console.log("Duplicate entry for email");
-        } else {
-          data.forEach((item) => {
-            console.log("Registration was a succes with id " + item.id);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(`Error during register:`, error);
-      });
-  } else if (type === "login") {
-    fetch(advancedUrl + "fetch", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "users",
-        data: {
-          email: email,
-          secret_password: password,
-        },
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(({ data }) => {
-        if (data.type === "ERROR" && data.msg === "Failed to fetch rows") {
-          console.log("This email isn't registered yet");
-        } else {
-          data.forEach((item) => {
-            if (item.secret_password) {
-              console.log("Login was a success");
-            } else {
-              console.log("Invalid password");
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(`Error during login:`, error);
-      });
-  }
-}
-
-function makeServerRequest(server, method, table, data, change) {
-  return fetch(advancedUrl + server, {
-    method: method,
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({
-      table: table,
-      data: data,
-      change: change,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+    makeServerRequest(server, method, table, data, change).then((data) => {
+      if (data.type === "ERROR") {
+        console.log("Duplicate entry for email");
+        return;
+      } else {
+        data.forEach((item) => {
+          console.log("Registration was a succes with id " + item.id);
+        });
       }
-      return response.json();
-    })
-    .then(({ data }) => {
-      return data;
-    })
-    .catch((error) => {
-      console.error(`Error during ${server} operation:`, error);
-      throw error;
     });
+  } else if (
+    username.value !== "" &&
+    password.value !== "" &&
+    header.innerHTML === "Please LOGIN"
+  ) {
+    const server = "fetch";
+    const method = server === "update" ? "PATCH" : "POST";
+    const table = "users";
+    const data = {
+      email: username.value,
+      secret_password: password.value,
+    };
+    const change = {};
+
+    makeServerRequest(server, method, table, data, change).then((data) => {
+      if (data.type === "ERROR") {
+        console.log("This email isn't registered yet");
+        return;
+      } else {
+        data.forEach((item) => {
+          if (item.secret_password) {
+            console.log("Login was a success");
+          } else {
+            console.log("Invalid password");
+          }
+        });
+      }
+    });
+  } else {
+    alert("Please fill in all fields.");
+  }
 }
