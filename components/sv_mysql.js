@@ -8,7 +8,7 @@ const key = process.env.ENCRYPTION_KEY;
 
 // function generateCrypto() {
 //   console.log("IV" + crypto.randomBytes(16).toString("hex"));
-//   console.log("Key " + crypto.randomBytes(32).toString("hex"));
+//   console.log("Key " + crypto.randomBytFes(32).toString("hex"));
 // }
 
 function encrypt(text) {
@@ -186,11 +186,11 @@ class DbService {
         };
       }
 
-      const setValues = Object.entries(data)
+      const setValues = Object.entries(change)
         .map(([key, value]) => `${key} = ${mysql.escape(value)}`)
         .join(", ");
 
-      const whereClause = Object.entries(change)
+      const whereClause = Object.entries(data)
         .map(([key, value]) => `${key} = ${mysql.escape(value)}`)
         .join(" AND ");
 
